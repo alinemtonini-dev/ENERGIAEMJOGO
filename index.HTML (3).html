@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Energia em Jogo | Física na EJA</title>
+<style>
+:root{--bg:#101827;--panel:#19263a;--panel2:#202f46;--text:#f4f7fb;--muted:#aebbd0;--cyan:#55d6c2;--yellow:#ffd166;--pink:#ff8295;--line:#34445c;--good:#92e6ac;--bad:#ff9eaa}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 15% 0%,#203852 0,transparent 42%),var(--bg);color:var(--text);font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif;min-width:320px}
+button,input,textarea,select{font:inherit}
+button{border:0;border-radius:12px;padding:11px 16px;background:var(--cyan);color:#09221f;font-weight:800;cursor:pointer;transition:transform .15s,filter .15s}
+button:hover{filter:brightness(1.08);transform:translateY(-1px)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+button.warn{background:#452737;color:#ffd8df;border:1px solid #744050}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.wrap{width:min(1100px,100%);margin:auto;padding:22px clamp(14px,4vw,38px) 44px}
+header{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:20px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--cyan),#a3f0dc);display:grid;place-items:center;font-size:24px;color:#102a2a}
+h1{font-size:clamp(1.25rem,3vw,1.8rem);line-height:1.1;margin:0}
+.eyebrow{font-size:.76rem;text-transform:uppercase;letter-spacing:.12em;color:var(--cyan);font-weight:800;margin:0 0 4px}
+h2{font-size:clamp(1.25rem,2.6vw,1.8rem);line-height:1.25;margin:0 0 12px}
+h3{margin:0 0 7px;font-size:1.05rem}
+p{margin:8px 0;color:var(--muted)}
+strong{color:var(--text)}
+main{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(250px,.85fr);gap:18px;align-items:start}
+.card{background:linear-gradient(150deg,rgba(32,47,70,.97),rgba(25,38,58,.97));border:1px solid var(--line);border-radius:20px;padding:clamp(17px,3vw,26px);box-shadow:0 14px 36px #0002}
+.hero{grid-column:1/-1;display:grid;grid-template-columns:1.35fr .8fr;gap:20px;align-items:center}
+.hero p{max-width:68ch}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+.chip{padding:5px 10px;border:1px solid #3c526a;border-radius:99px;color:#d3e3f2;font-size:.87rem}
+.formula{background:#101b2b;border:1px solid var(--line);border-radius:15px;padding:15px}
+.formula div{font-size:1.25rem;font-weight:850;letter-spacing:.02em;color:var(--yellow)}
+.formula p{font-size:.88rem;margin:3px 0 9px}
+.actions,.tabs{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.hidden{display:none!important}
+label{display:block;font-weight:750;margin:13px 0 6px}
+textarea,input,select{width:100%;border:1px solid #40536c;background:#101b2b;color:var(--text);border-radius:11px;padding:11px 12px}
+textarea{min-height:116px;resize:vertical}
+.hint{font-size:.87rem;color:var(--muted);margin-top:6px}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.score-list{display:grid;gap:9px;margin-top:12px}
+.score-row{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:11px;background:#101b2b;border:1px solid #2b3d55}
+.score-row.current{border-color:var(--yellow)}
+.score{font-size:1.15rem;font-weight:900;color:var(--yellow);white-space:nowrap}
+.roundline{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:13px}
+.badge{border-radius:99px;background:#263a52;padding:5px 10px;font-size:.85rem;color:#d5e4f4}
+.question{font-size:1.16rem;color:var(--text);font-weight:700;margin:12px 0}
+.workpad{background:#101b2b;border-radius:12px;padding:12px;border-left:3px solid var(--cyan);margin:14px 0;color:#d6e2ef}
+.answer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.answer-box{border:1px solid var(--line);background:#172338;border-radius:14px;padding:12px}
+.answer-box label{margin:0 0 7px}
+.answer-box input,.answer-box select{margin-top:6px}
+.feedback{margin-top:16px;border-radius:13px;padding:14px;background:#102c2d;border:1px solid #2c746b}
+.feedback.wrong{background:#351f2b;border-color:#724052}
+.feedback h3{color:var(--good)}
+.feedback.wrong h3{color:var(--bad)}
+.result-list{display:grid;gap:8px;margin-top:12px}
+.result-item{display:flex;justify-content:space-between;gap:10px;padding:8px 10px;border-radius:9px;background:#101b2b}
+details{border-top:1px solid var(--line);padding-top:13px;margin-top:14px}
+summary{cursor:pointer;font-weight:800;color:#dce9f6}
+.offline{grid-column:1/-1}
+.steps{padding-left:20px;color:var(--muted)}
+.steps li{margin:6px 0}
+.question-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:12px}
+.mini-card{border:1px solid var(--line);background:#101b2b;border-radius:12px;padding:12px}
+.footer{margin-top:18px;color:var(--muted);font-size:.85rem;text-align:center}
+.online-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:14px}
+.online-box{background:#101b2b;border:1px solid var(--line);border-radius:14px;padding:14px}
+.online-code{font-size:1.05rem;font-weight:850;letter-spacing:.04em;overflow-wrap:anywhere;color:var(--yellow)}
+.student-answer{margin-top:14px}
+@media(max-width:760px){main{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.offline{grid-column:auto}header{align-items:flex-start}}
+@media print{
+ body{background:#fff;color:#111}
+ body *{visibility:hidden!important}
+ #printPack,#printPack *{visibility:visible!important}
+ #printPack{display:block!important;position:absolute;inset:0;width:100%;padding:15mm;background:white;color:#111}
+ #printPack h1,#printPack h2,#printPack h3{color:#111}
+ #printPack p{color:#222}
+ .print-card{border:1px solid #555;border-radius:8px;padding:10px;margin:9px 0;break-inside:avoid}
+ .print-answer{font-size:.9rem;color:#333}
+}
+#printPack{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand"><div class="logo" aria-hidden="true">⚡</div><div><p class="eyebrow">Física na EJA · Ensino Médio</p><h1>Energia em Jogo</h1></div></div>
+  <button class="secondary" type="button" id="printBtn">Imprimir cartas</button>
+</header>
+
+<section class="card" id="onlinePanel">
+  <p class="eyebrow">Jogo online por equipes</p>
+  <h2> cada grupo joga no próprio computador</h2>
+  <p>O professor cria uma sala e compartilha o link com a turma. Para obter um link público, primeiro publique este arquivo HTML em uma hospedagem que sirva páginas pela internet. Depois, abra o endereço público, crie a sala e compartilhe o link de entrada direta. Cada grupo entra com um nome, responde no próprio computador e acompanha o resultado.</p>
+  <div class="online-grid">
+    <div class="online-box">
+      <h3>Professor: criar sala</h3>
+      <p class="small">Crie a sala neste computador. Aguarde pelo menos duas equipes conectarem e então inicie a partida.</p>
+      <button type="button" id="createRoomBtn">Criar sala online</button>
+      <p id="hostStatus" class="hint" role="status">Sala ainda não criada.</p>
+      <div id="roomInfo" class="hidden"><span class="muted">Código da sala:</span><div id="roomCode" class="online-code"></div><div id="shareLinkBox" class="hidden"><label for="shareLink">Link de entrada direta</label><input id="shareLink" type="url" readonly><div class="actions"><button type="button" id="copyShareLinkBtn">Copiar link</button></div><p id="shareLinkStatus" class="hint">Envie este link às equipes. Cada grupo informa seu nome ao entrar.</p></div><p id="connectedTeams" class="hint">Nenhuma equipe conectada.</p><button type="button" id="startOnlineBtn" disabled>Iniciar partida online</button></div>
+    </div>
+    <div class="online-box">
+      <h3>Equipes: entrar na sala</h3>
+      <label for="joinCode">Código da sala</label><input id="joinCode" autocomplete="off" placeholder="Cole o código compartilhado pelo professor">
+      <label for="joinTeam">Nome da equipe</label><input id="joinTeam" maxlength="32" autocomplete="off" placeholder="Ex.: Equipe Sol">
+      <div class="actions"><button type="button" id="joinRoomBtn">Entrar na sala</button></div>
+      <p id="joinStatus" class="hint" role="status">A equipe envia uma resposta por desafio.</p>
+    </div>
+  </div>
+</section>
+
+<section class="card hidden" id="studentPanel" aria-live="polite">
+  <p class="eyebrow">Equipe conectada</p><h2 id="studentTitle">Aguardando o professor</h2>
+  <p id="studentStatus" class="hint">A partida começará quando o professor iniciar.</p>
+  <div id="studentQuestion" class="hidden">
+    <div class="roundline"><span class="badge" id="studentRound"></span></div>
+    <p id="studentQuestionText" class="question"></p>
+    <div class="workpad" id="studentHint"></div>
+    <div class="student-answer" id="studentAnswer"></div>
+    <div class="actions"><button type="button" id="sendAnswerBtn">Enviar resposta</button></div>
+    <div class="feedback hidden" id="studentFeedback" role="status"></div>
+  </div>
+  <div class="online-box">
+    <h3>Placar das equipes</h3>
+    <div id="studentScoreboard" class="score-list"><p class="hint">O placar aparece quando a partida começar.</p></div>
+  </div>
+</section>
+
+<main>
+  <section class="card hero">
+    <div>
+      <p class="eyebrow">Jogo cooperativo com competição leve</p>
+      <h2>Quem calcula melhor o ritmo e a quantidade de energia?</h2>
+      <p>Em equipes, a turma resolve situações do cotidiano, como o uso do chuveiro e de lâmpadas. Cada acerto vale pontos, e a explicação vale tanto quanto o resultado: conversem, estimem e confiram as unidades.</p>
+      <div class="chips"><span class="chip">30–40 minutos</span><span class="chip">2 a 5 equipes</span><span class="chip">Modo local offline</span><span class="chip">Celular opcional</span></div>
+    </div>
+    <div class="formula">
+      <div>P = E ÷ t</div><p>Potência: energia usada ou transformada por unidade de tempo. Unidade: watt (W).</p>
+      <div>E = P × t</div><p>Energia: quantidade transferida ou transformada. Unidade: joule (J).</p>
+      <p><strong>Tempo:</strong> em segundos (s). Potência é o ritmo; energia é a quantidade total.</p>
+    </div>
+  </section>
+
+  <section class="card" id="setup">
+    <p class="eyebrow">Preparação do jogo</p>
+    <h2>Monte as equipes</h2>
+    <p>Escreva um nome por linha. Use de 2 a 5 equipes; cada equipe conversa antes de registrar uma resposta.</p>
+    <label for="teamNames">Nomes das equipes</label>
+    <textarea id="teamNames">Equipe A
+Equipe B
+Equipe C</textarea>
+    <p class="hint">Sugestão: misture estudantes com diferentes níveis de familiaridade com contas. Quem terminar primeiro pode ajudar a revisar unidades, sem dar a resposta à outra equipe.</p>
+    <div class="actions"><button type="button" id="startBtn">Começar o jogo</button></div>
+  </section>
+
+  <aside class="card" id="sidebar">
+    <p class="eyebrow">Exemplo resolvido</p>
+    <h2>Uma lâmpada em ação</h2>
+    <p>Uma lâmpada de <strong>60 W</strong> fica ligada por <strong>2 minutos</strong>. Quanta energia transforma?</p>
+    <div class="workpad">
+      2 min = 120 s<br>
+      E = P × t = 60 W × 120 s<br>
+      <strong>E = 7.200 J</strong>
+    </div>
+    <p class="small">A unidade fecha assim: W × s = J. Se o tempo vier em minutos, converta para segundos antes de calcular.</p>
+    <details>
+      <summary>Como jogar e pontuar</summary>
+      <ol class="steps">
+        <li>Formem de 2 a 5 equipes e escolham um porta-voz por rodada.</li>
+        <li>Leiam a situação, conversem e registrem uma resposta por equipe.</li>
+        <li>Cada resposta correta vale <strong>10 pontos</strong>. A explicação oral do raciocínio vale até <strong>2 pontos extras</strong>, decididos pelo professor.</li>
+        <li>Para respostas numéricas, registrem também a unidade. O aplicativo confere o valor; a unidade é revisada pela turma.</li>
+        <li>Vence quem somar mais pontos ao fim dos seis desafios. Empate: cada equipe empatada explica como calcular a potência de um aparelho; a turma escolhe a explicação mais clara.</li>
+      </ol>
+      <p class="small">Erro não tira pontos: peça que a equipe confira a fórmula, a conversão de tempo e a unidade. Convide colegas a explicar de outro jeito, sem expor ou ridicularizar ninguém.</p>
+    </details>
+  </aside>
+
+  <section class="card hidden" id="game" aria-live="polite">
+    <div class="section-title"><div><p class="eyebrow">Rodada em andamento</p><h2 id="roundTitle"></h2></div><button class="secondary" id="resetBtn" type="button">Recomeçar</button></div>
+    <div class="roundline"><span class="badge" id="roundBadge"></span><span class="badge">10 pontos por acerto</span><span class="badge">até 2 extras pela explicação</span></div>
+    <p id="questionText" class="question"></p>
+    <div class="workpad" id="hintText"></div>
+    <div class="answer-grid" id="answerGrid"></div>
+    <div class="actions"><button id="checkBtn" type="button">Conferir respostas da rodada</button><button class="secondary hidden" id="nextBtn" type="button">Próxima rodada</button></div>
+    <div class="feedback hidden" id="feedback" role="status"></div>
+  </section>
+
+  <aside class="card hidden" id="scorePanel">
+    <p class="eyebrow">Placar</p><h2>Pontos das equipes</h2><div id="scoreboard" class="score-list"></div>
+    <p class="hint">Use o placar para valorizar o raciocínio e a colaboração, não apenas a rapidez.</p>
+  </aside>
+
+  <section class="card hidden" id="endPanel" aria-live="polite"></section>
+
+  <section class="card offline">
+    <p class="eyebrow">Plano sem celular, internet ou projetor</p>
+    <h2>Versão com cartas, quadro e conversa</h2>
+    <p>O jogo também funciona inteiramente no papel. Use as mesmas seis situações, uma por rodada; a tela de impressão inclui cartas e gabarito para o professor.</p>
+    <ol class="steps">
+      <li>Escreva no quadro as fórmulas <strong>P = E ÷ t</strong> e <strong>E = P × t</strong>, com as unidades W, J e s.</li>
+      <li>Divida a turma em equipes. Entregue uma folha para cada equipe registrar cálculo, unidade e uma frase explicando o raciocínio.</li>
+      <li>Leia ou distribua uma carta por vez. Dê de 3 a 5 minutos para conversar e responder; revelem as respostas simultaneamente.</li>
+      <li>Marque 10 pontos por resposta correta e até 2 extras pela explicação. Corrija em conjunto, pedindo que a turma localize o passo que precisa de ajuste.</li>
+      <li>Feche com a pergunta: <strong>“Em casa ou no trabalho, qual aparelho vocês acham que tem maior potência? Como poderiam estimar a energia usada?”</strong></li>
+    </ol>
+    <details>
+      <summary>Adaptações para diferentes níveis de matemática</summary>
+      <p>Para apoiar: deixe a fórmula à vista, permita calculadora e entregue a conversão necessária (por exemplo, 2 min = 120 s). Para ampliar o desafio: peça que a equipe mostre cada etapa, estime antes de calcular e confira se o resultado é coerente. Incentive que os estudantes expliquem oralmente antes de registrar a conta.</p>
+    </details>
+  </section>
+</main>
+<p class="footer">Proposta adaptável: ajuste o tempo de conversa, a quantidade de equipes e o apoio matemático conforme a turma.</p>
+</div>
+
+<section id="printPack" aria-hidden="true">
+  <h1>Energia em Jogo · Cartas para imprimir</h1>
+  <p>Recorte ou leia uma carta por rodada. Fórmulas de apoio: P = E ÷ t e E = P × t. Use segundos (s), joules (J) e watts (W).</p>
+  <div id="printCards"></div>
+  <h2>Gabarito do professor</h2>
+  <div id="printAnswers"></div>
+  <p><strong>Pontuação:</strong> 10 pontos por acerto e até 2 extras pela explicação. Empate: vence a explicação mais clara para o desafio oral escolhido pelo professor.</p>
+</section>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+(function(){
+"use strict";
+const rounds=[
+ {title:"Desafio 1 · Potência",question:"Uma pessoa transfere 1.200 J de energia em 60 s. Qual é a potência média?",hint:"Use P = E ÷ t. Divida a energia pelo tempo.",type:"number",answer:20,unit:"W",solution:"P = 1.200 J ÷ 60 s = 20 W. A potência indica quanta energia é transferida a cada segundo."},
+ {title:"Desafio 2 · Energia",question:"Uma lâmpada de 100 W fica ligada por 30 s. Quanta energia ela transforma nesse intervalo?",hint:"Use E = P × t. Multiplique watts por segundos.",type:"number",answer:3000,unit:"J",solution:"E = 100 W × 30 s = 3.000 J. Como W × s = J, a unidade é joule."},
+ {title:"Desafio 3 · Chuveiro e conversão",question:"Um chuveiro de 5.500 W fica ligado por 10 minutos. Qual energia ele transforma, em joules?",hint:"Primeiro converta o tempo: 10 min = 600 s. Depois use E = P × t.",type:"number",answer:3300000,unit:"J",solution:"10 min = 600 s. E = 5.500 W × 600 s = 3.300.000 J. Converter minutos para segundos é essencial para o resultado em joules."},
+ {title:"Desafio 4 · Comparando potências",question:"Duas lâmpadas transformam energia durante tempos diferentes: uma de 60 W fica ligada por 120 s; outra de 120 W, por 60 s. Como se comparam as energias?",hint:"Calcule E = P × t para cada lâmpada e compare os resultados.",type:"choice",answer:"igual",options:[["igual","As duas transformam a mesma energia."],["maior","A lâmpada de 120 W transforma mais energia."],["menor","A lâmpada de 120 W transforma menos energia."]],solution:"60 W × 120 s = 7.200 J; 120 W × 60 s = 7.200 J. As energias são iguais, embora a segunda lâmpada tenha maior potência e transforme energia mais rapidamente."},
+ {title:"Desafio 5 · Encontrando a potência",question:"Um aparelho transforma 2.000 J de energia em 25 s. Qual é sua potência média?",hint:"Use P = E ÷ t. Faça 2.000 ÷ 25.",type:"number",answer:80,unit:"W",solution:"P = 2.000 J ÷ 25 s = 80 W."},
+ {title:"Desafio 6 · Aparelho do cotidiano",question:"Um aparelho de 150 W funciona por 2 minutos. Quanta energia transforma, em joules?",hint:"Converta 2 min para segundos. Depois use E = P × t.",type:"number",answer:18000,unit:"J",solution:"2 min = 120 s. E = 150 W × 120 s = 18.000 J."}
+];
+let teams=[],scores=[],roundIndex=0,locked=false;
+let onlineHost=false,hostPeer=null,clientPeer=null,clientConn=null,peers=new Map(),submissions={},studentTeam="";
+const $=id=>document.getElementById(id);
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function updateOnlineStatus(){
+ const names=[...peers.keys()];
+ $("connectedTeams").textContent=names.length?`Equipes conectadas (${names.length}): ${names.join(", ")}`:"Nenhuma equipe conectada.";
+ $("startOnlineBtn").disabled=names.length<2;
+}
+function prepareDirectJoin(){
+ const code=new URLSearchParams(window.location.search).get("sala");
+ if(code){
+  $("joinCode").value=code;
+  $("joinStatus").textContent="Código da sala preenchido pelo link. Informe o nome da equipe para entrar.";
+  $("joinTeam").focus();
+ }
+}
+function createShareLink(id){
+ if(location.protocol!=="http:"&&location.protocol!=="https:"){
+  $("shareLinkStatus").textContent="Para criar um link compartilhável, publique primeiro esta página em um endereço público.";
+  return;
+ }
+ const url=new URL(location.href);
+ url.searchParams.set("sala",id);
+ url.hash="";
+ $("shareLink").value=url.toString();
+ $("shareLinkBox").classList.remove("hidden");
+}
+async function copyShareLink(){
+ const field=$("shareLink");
+ if(!field.value)return;
+ try{
+  await navigator.clipboard.writeText(field.value);
+  $("shareLinkStatus").textContent="Link copiado. Envie-o às equipes.";
+ }catch(e){
+  field.focus();field.select();
+  const copied=document.execCommand("copy");
+  $("shareLinkStatus").textContent=copied?"Link copiado. Envie-o às equipes.":"Selecione e copie o link acima.";
+ }
+}
+function createOnlineRoom(){
+ if(!window.Peer){$("hostStatus").textContent="Não foi possível carregar a conexão online. Atualize a página e tente novamente.";return;}
+ if(hostPeer){$("hostStatus").textContent="A sala já está aberta.";return;}
+ $("hostStatus").textContent="Conectando...";
+ hostPeer=new Peer();
+ hostPeer.on("open",id=>{$("roomCode").textContent=id;$("roomInfo").classList.remove("hidden");createShareLink(id);$("hostStatus").textContent="Sala aberta. Compartilhe o link de entrada direta com as equipes.";});
+ hostPeer.on("connection",conn=>{
+  conn.on("data",data=>{
+   if(!data||typeof data!=="object")return;
+   if(data.type==="register"){
+    if(onlineHost){conn.send({type:"reject",message:"A partida já começou. Peça ao professor um novo link para a próxima partida."});return;}
+    const name=String(data.name||"").trim().slice(0,32);
+    if(!name||peers.has(name)){conn.send({type:"reject",message:"Esse nome de equipe já está em uso ou é inválido. Tente outro."});return;}
+    conn.team=name;peers.set(name,conn);conn.send({type:"registered",name});
+    updateOnlineStatus();
+   }else if(data.type==="answer"&&conn.team&&peers.get(conn.team)===conn){
+    submissions[conn.team]=String(data.value||"").trim();
+    $("connectedTeams").textContent=`Respostas recebidas: ${Object.keys(submissions).length} de ${teams.length} equipes.`;
+   }
+  });
+  conn.on("close",()=>{if(conn.team&&peers.get(conn.team)===conn){peers.delete(conn.team);delete submissions[conn.team];updateOnlineStatus();}});
+ });
+ hostPeer.on("error",err=>{$("hostStatus").textContent="Falha na sala: "+(err.message||"verifique a conexão com a internet.");});
+}
+function joinOnlineRoom(){
+ const code=$("joinCode").value.trim(),name=$("joinTeam").value.trim();
+ if(!code||!name){$("joinStatus").textContent="Informe o código da sala e o nome da equipe.";return;}
+ if(!window.Peer){$("joinStatus").textContent="Não foi possível carregar a conexão online. Atualize a página e tente novamente.";return;}
+ $("joinRoomBtn").disabled=true;$("joinStatus").textContent="Conectando à sala...";
+ clientPeer=new Peer();
+ clientPeer.on("open",()=>{clientConn=clientPeer.connect(code,{reliable:true});clientConn.on("open",()=>clientConn.send({type:"register",name}));clientConn.on("data",handleStudentMessage);clientConn.on("error",err=>{$("joinStatus").textContent="Falha na conexão: "+(err.message||"tente novamente.");$("joinRoomBtn").disabled=false;});clientConn.on("close",()=>{$("studentStatus").textContent="A conexão com a sala foi encerrada.";});});
+ clientPeer.on("error",err=>{$("joinStatus").textContent="Não foi possível entrar: "+(err.message||"confira o código da sala.");$("joinRoomBtn").disabled=false;});
+}
+function handleStudentMessage(data){
+ if(!data||typeof data!=="object")return;
+ if(data.type==="reject"){$("joinStatus").textContent=data.message;$("joinRoomBtn").disabled=false;return;}
+ if(data.type==="registered"){
+  studentTeam=data.name;$("studentTitle").textContent=studentTeam;
+  $("onlinePanel").classList.add("hidden");$("setup").classList.add("hidden");$("sidebar").classList.add("hidden");
+  $("studentPanel").classList.remove("hidden");$("joinStatus").textContent="Conectado.";return;
+ }
+ if(data.type==="scores"){
+  const list=Array.isArray(data.teams)?data.teams:[];
+  $("studentScoreboard").innerHTML=list.length?list.map(team=>`<div class="score-row"><span>${escapeHTML(team.name)}</span><span class="score">${Number(team.score)||0} pts</span></div>`).join(""):"<p class='hint'>O placar aparecerá quando a partida começar.</p>";
+  return;
+ }
+ if(data.type==="round"){
+  $("studentQuestion").classList.remove("hidden");$("studentFeedback").className="feedback hidden";
+  $("studentRound").textContent=`Desafio ${data.index+1} de ${data.total} · ${data.title}`;
+  $("studentQuestionText").textContent=data.question;$("studentHint").innerHTML="<strong>Pista:</strong> "+escapeHTML(data.hint);
+  $("studentAnswer").innerHTML=data.type==="choice"
+   ?`<label for="studentAnswerInput">Resposta da equipe</label><select id="studentAnswerInput"><option value="">Escolha uma resposta</option>${data.options.map(o=>`<option value="${escapeHTML(o[0])}">${escapeHTML(o[1])}</option>`).join("")}</select>`
+   :`<label for="studentAnswerInput">Resposta em ${escapeHTML(data.unit)}</label><input id="studentAnswerInput" type="text" inputmode="decimal" autocomplete="off" placeholder="Digite o valor">`;
+  $("sendAnswerBtn").disabled=false;$("sendAnswerBtn").textContent="Enviar resposta";$("studentStatus").textContent="Conversem em equipe e enviem uma resposta.";return;
+ }
+ if(data.type==="result"){
+  $("sendAnswerBtn").disabled=true;$("sendAnswerBtn").textContent="Resposta enviada";
+  $("studentFeedback").className="feedback"+(data.correct?"":" wrong");
+  $("studentFeedback").innerHTML=`<h3>${data.correct?"Resposta correta!":"Vamos revisar"}</h3><p>${escapeHTML(data.solution)}</p><p>Placar da equipe: <strong>${Number(data.score)||0} pontos</strong>.</p>`;
+  $("studentStatus").textContent="Aguardem o próximo desafio.";return;
+ }
+ if(data.type==="end"){
+  $("studentQuestion").classList.add("hidden");$("studentTitle").textContent="Fim do jogo";
+  $("studentStatus").textContent=data.message;return;
+ }
+}
+function sendStudentAnswer(){
+ const field=$("studentAnswerInput"),value=field&&field.value.trim();
+ if(!clientConn||!clientConn.open||!value){$("studentStatus").textContent="Escolham ou digitem uma resposta antes de enviar.";return;}
+ clientConn.send({type:"answer",team:studentTeam,value});
+ $("sendAnswerBtn").disabled=true;$("sendAnswerBtn").textContent="Resposta enviada";$("studentStatus").textContent="Resposta enviada ao professor. Aguardem a correção.";
+}
+function broadcast(data){peers.forEach(conn=>{if(conn.open)conn.send(data);});}
+function startOnlineGame(){
+ if(peers.size<2){alert("Aguarde pelo menos duas equipes conectarem.");return;}
+ onlineHost=true;teams=[...peers.keys()];scores=teams.map(()=>0);roundIndex=0;locked=false;submissions={};
+ $("onlinePanel").classList.add("hidden");$("setup").classList.add("hidden");$("sidebar").classList.add("hidden");
+ $("game").classList.remove("hidden");$("scorePanel").classList.remove("hidden");$("endPanel").classList.add("hidden");
+ renderRound();
+}
+function setupGame(){
+ const names=$("teamNames").value.split(/\n/).map(s=>s.trim()).filter(Boolean);
+ if(names.length<2||names.length>5){alert("Digite de 2 a 5 nomes de equipes, um por linha.");return;}
+ onlineHost=false;teams=names;scores=names.map(()=>0);roundIndex=0;locked=false;
+ $("setup").classList.add("hidden");$("game").classList.remove("hidden");$("scorePanel").classList.remove("hidden");$("endPanel").classList.add("hidden");
+ renderRound();
+}
+function renderRound(){
+ locked=false;submissions={};
+ const r=rounds[roundIndex];
+ $("roundTitle").textContent=r.title;
+ $("roundBadge").textContent="Desafio "+(roundIndex+1)+" de "+rounds.length;
+ $("questionText").textContent=r.question;
+ $("hintText").innerHTML="<strong>Pista:</strong> "+escapeHTML(r.hint);
+ $("feedback").className="feedback hidden";$("feedback").innerHTML="";
+ $("checkBtn").classList.remove("hidden");$("checkBtn").disabled=false;
+ $("nextBtn").classList.add("hidden");
+ if(onlineHost){
+  $("answerGrid").innerHTML="<div class='answer-box'>As equipes registram as respostas nos próprios computadores. Confira o placar de recebimento antes de corrigir.</div>";
+  $("checkBtn").textContent="Conferir respostas recebidas";
+  broadcast({type:"round",index:roundIndex,total:rounds.length,title:r.title,question:r.question,hint:r.hint,type:r.type,unit:r.unit,options:r.options||[]});
+ }else{
+  $("checkBtn").textContent="Conferir respostas da rodada";
+  $("answerGrid").innerHTML=teams.map((name,i)=>{
+   let field=r.type==="choice"
+    ? `<select id="ans${i}" aria-label="Resposta de ${escapeHTML(name)}"><option value="">Escolha uma resposta</option>${r.options.map(o=>`<option value="${o[0]}">${escapeHTML(o[1])}</option>`).join("")}</select>`
+    : `<input id="ans${i}" type="text" inputmode="decimal" autocomplete="off" placeholder="Valor em ${r.unit}" aria-label="Resposta de ${escapeHTML(name)}">`;
+   return `<div class="answer-box"><label for="ans${i}">${escapeHTML(name)}</label>${field}${r.type==="number"?`<div class="hint">Unidade esperada: ${r.unit}</div>`:""}</div>`;
+  }).join("");
+ }
+ renderScores();
+}
+function renderScores(){
+ $("scoreboard").innerHTML=teams.map((n,i)=>`<div class="score-row"><span>${escapeHTML(n)}</span><span class="score">${scores[i]} pts</span></div>`).join("");
+ if(onlineHost)broadcast({type:"scores",teams:teams.map((name,i)=>({name,score:scores[i]}))});
+}
+function parseNumber(value){
+ const cleaned=String(value).trim().replace(/\s/g,"").replace(",",".").replace(/[.](?=\d{3}(\D|$))/g,"");
+ if(!cleaned||!/^[-+]?\d*\.?\d+$/.test(cleaned))return NaN;
+ return Number(cleaned);
+}
+function checkAnswers(){
+ if(locked)return;
+ const r=rounds[roundIndex],answers=[];
+ if(onlineHost){
+  const missing=teams.filter(name=>!submissions[name]);
+  if(missing.length){alert("Ainda faltam respostas de: "+missing.join(", ")+".");return;}
+  teams.forEach((name,i)=>{
+   const val=submissions[name];let correct;
+   if(r.type==="number"){
+    const n=parseNumber(val);correct=Number.isFinite(n)&&Math.abs(n-r.answer)<=Math.max(.01,Math.abs(r.answer)*.01);
+   }else correct=val===r.answer;
+   answers.push({name,correct,value:val});
+  });
+ }else{
+  for(let i=0;i<teams.length;i++){
+   const val=$("ans"+i).value.trim();
+   if(!val){alert("Preencha a resposta de todas as equipes antes de conferir.");return;}
+   let correct;
+   if(r.type==="number"){
+    const n=parseNumber(val);
+    if(!Number.isFinite(n)){alert("Use apenas um número. Exemplo: 3000 ou 3.000, conforme a situação.");return;}
+    correct=Math.abs(n-r.answer)<=Math.max(.01,Math.abs(r.answer)*.01);
+   }else correct=val===r.answer;
+   answers.push({name:teams[i],correct,value:val});
+  }
+ }
+ locked=true;
+ answers.forEach((a,i)=>{if(a.correct)scores[i]+=10;});
+ $("checkBtn").classList.add("hidden");$("nextBtn").classList.remove("hidden");
+ const correctCount=answers.filter(a=>a.correct).length;
+ $("feedback").className="feedback"+(correctCount===teams.length?"":" wrong");
+ $("feedback").innerHTML=`<h3>${correctCount===teams.length?"Rodada perfeita!":"Vamos conferir juntos"}</h3><p>${escapeHTML(r.solution)}</p><div class="result-list">${answers.map(a=>`<div class="result-item"><span>${escapeHTML(a.name)}</span><strong>${a.correct?"+10 pontos · correta":"0 pontos · precisa revisar"}</strong></div>`).join("")}</div><p class="small">A pontuação extra pela explicação é decidida pelo professor: até 2 pontos por equipe.</p>`;
+ if(onlineHost)answers.forEach(a=>{const conn=peers.get(a.name);if(conn&&conn.open)conn.send({type:"result",correct:a.correct,solution:r.solution,score:scores[teams.indexOf(a.name)]});});
+ renderScores();
+}
+function nextRound(){
+ roundIndex++;
+ if(roundIndex<rounds.length){renderRound();return;}
+ $("game").classList.add("hidden");$("scorePanel").classList.remove("hidden");$("endPanel").classList.remove("hidden");
+ const max=Math.max(...scores),winners=teams.filter((_,i)=>scores[i]===max);
+ const message=winners.length===1?`${winners[0]} venceu com ${max} pontos.`:`Empate entre ${winners.join(" e ")}, com ${max} pontos.`;
+ if(onlineHost)broadcast({type:"end",message});
+ $("endPanel").innerHTML=`<p class="eyebrow">Fim do jogo</p><h2>${winners.length===1?"Equipe vencedora":"Empate no placar"}</h2><p><strong>${winners.map(escapeHTML).join(" e ")}</strong> ${winners.length===1?"venceu":"empataram"} com <strong>${max} pontos</strong>.</p><p>Para desempatar, cada equipe empatada explica como calcular a potência de um aparelho do cotidiano. A turma escolhe a explicação mais clara, considerando fórmula, unidades e raciocínio.</p><div class="actions"><button id="againBtn" type="button">Jogar novamente</button></div>`;
+ $("againBtn").addEventListener("click",()=>{$("setup").classList.remove("hidden");$("onlinePanel").classList.remove("hidden");$("endPanel").classList.add("hidden");$("game").classList.add("hidden");$("scorePanel").classList.add("hidden");});
+}
+function resetGame(){
+ if(confirm("Recomeçar o jogo e zerar o placar?")){onlineHost=false;$("setup").classList.remove("hidden");$("onlinePanel").classList.remove("hidden");$("game").classList.add("hidden");$("scorePanel").classList.add("hidden");$("endPanel").classList.add("hidden");}
+}
+function printPack(){
+ $("printCards").innerHTML=rounds.map((r,i)=>`<div class="print-card"><h3>${escapeHTML(r.title)}</h3><p>${escapeHTML(r.question)}</p><p><strong>Pista:</strong> ${escapeHTML(r.hint)}</p></div>`).join("");
+ $("printAnswers").innerHTML=rounds.map(r=>`<div class="print-card"><h3>${escapeHTML(r.title)}</h3><p>${escapeHTML(r.solution)}</p><p class="print-answer"><strong>Resposta:</strong> ${r.type==="number"?r.answer.toLocaleString("pt-BR")+" "+r.unit:r.options.find(o=>o[0]===r.answer)[1]}</p></div>`).join("");
+ window.print();
+}
+$("startBtn").addEventListener("click",setupGame);
+$("checkBtn").addEventListener("click",checkAnswers);
+$("nextBtn").addEventListener("click",nextRound);
+$("resetBtn").addEventListener("click",resetGame);
+$("printBtn").addEventListener("click",printPack);
+$("createRoomBtn").addEventListener("click",createOnlineRoom);
+$("joinRoomBtn").addEventListener("click",joinOnlineRoom);
+$("startOnlineBtn").addEventListener("click",startOnlineGame);
+$("sendAnswerBtn").addEventListener("click",sendStudentAnswer);
+$("copyShareLinkBtn").addEventListener("click",copyShareLink);
+prepareDirectJoin();
+})();
+</script>
+</body>
+</html>
